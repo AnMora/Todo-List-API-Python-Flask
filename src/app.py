@@ -13,15 +13,24 @@ def hello_world():
 # Es para postear
 @app.route('/todos', methods=['POST'])
 def add_new_todo():
-    decoded_object = request.get_json()
-    todos.append(decoded_object) # INSERTA al final del Array
-    return jsonify(todos), 200
+    # decoded_object = request.get_json()
+    # todos.append(decoded_object) # INSERTA al final del Array
+    # return jsonify(todos), 200
+    request_body = request.data
+    decoded_object = json.loads(request_body)
+    todos.append(decoded_object)
+    json_text = jsonify(todos)
+    return json_text
 
-# request_body = request.data
-# decoded_object = json.loads(request_body)
-# todos.append(decoded_object)
-# json_text = jsonify(todos)
-# return json_text
+@app.route('/todos/<int:position>', methods=['DELETE'])
+def delete_todo(position):
+    if position < len(todos):
+        todos.pop(position) # Elimina por la posicion del indice
+        # todos.remove(position) Elimina por el valor exacto
+    else:
+        raise Exception('Esta posicion no existe')
+    return jsonify(todos), 200 
+
 
 # These two lines should always be at the end of your app.py file.
 if __name__ == '__main__':
